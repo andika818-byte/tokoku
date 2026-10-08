@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TokoKu - Top Up Game</title>
+<style>
+ body{margin:0;background:#0f111a;color:#fff;font-family:sans-serif}
+ header{padding:16px;background:#1a1d29;display:flex;gap:10px}
+ header b{color:#f5c542;font-size:20px}
+ input{flex:1;padding:10px;border-radius:10px;border:0}
+ h2{padding:0 16px}
+ .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
+ .card{background:#2a2d3a;border-radius:16px;padding:12px;cursor:pointer}
+ .card h3{margin:8px 0 2px;font-size:15px}
+ .card small{color:#aaa}
+ .emoji{font-size:40px}
+ #modal{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center}
+ .box{background:#1a1d29;padding:20px;border-radius:16px;width:85%}
+ .box button{display:block;width:100%;margin:6px 0;padding:12px;border:0;border-radius:10px;background:#f5c542;font-weight:bold}
+</style>
+</head>
+<body>
+<header><b>⚡ TokoKu</b><input id="cari" placeholder="Cari game..." oninput="tampil()"></header>
+<h2>🔥 Populer Sekarang!</h2>
+<div class="grid" id="grid"></div>
+
+<div id="modal" onclick="this.style.display='none'">
+ <div class="box" onclick="event.stopPropagation()">
+  <h3 id="judul"></h3>
+  <input id="uid" placeholder="Masukkan User ID">
+  <div id="paket"></div>
+ </div>
+</div>
+
+<script>
+const games=[
+ {n:"Free Fire",p:"Garena",e:"🔥",h:[["70 Diamond",10000],["140 Diamond",20000]]},
+ {n:"Mobile Legends",p:"Moonton",e:"⚔️",h:[["86 Diamond",22000],["172 Diamond",44000]]},
+ {n:"Valorant",p:"Riot Games",e:"🎯",h:[["475 VP",55000],["1000 VP",110000]]},
+ {n:"Growtopia",p:"Ubisoft",e:"🌱",h:[["1 DL",30000],["5 DL",150000]]}
+];
+const NOMOR="628123456789";
+
+function tampil(){
+ const q=document.getElementById("cari").value.toLowerCase();
+ document.getElementById("grid").innerHTML=games
+  .map((g,i)=>({g,i}))
+  .filter(x=>x.g.n.toLowerCase().includes(q))
+  .map(x=>`<div class="card" onclick="buka(${x.i})">
+    <div class="emoji">${x.g.e}</div>
+    <h3>${x.g.n}</h3><small>${x.g.p}</small></div>`).join("");
+}
+function buka(i){
+ const g=games[i];
+ document.getElementById("judul").textContent="Top Up "+g.n;
+ document.getElementById("paket").innerHTML=g.h
+  .map(h=><button onclick="beli('${g.n}','${h[0]}',${h[1]})">${h[0]} - Rp${h[1].toLocaleString("id-ID")}</button>).join("");
+ document.getElementById("modal").style.display="flex";
+}
+function beli(game,paket,harga){
+ const uid=document.getElementById("uid").value;
+ if(!uid){alert("Isi User ID dulu");return;}
+ const pesan=Halo, saya mau top up ${game}%0APaket: ${paket}%0AHarga: Rp${harga}%0AUser ID: ${uid};
+ window.open(https://wa.me/${NOMOR}?text=${pesan});
+}
+tampil();
+</script>
+</body>
+</html>
